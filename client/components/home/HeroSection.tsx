@@ -1,145 +1,112 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Search, Star, Shield, Zap } from 'lucide-react';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import gsap from 'gsap';
+import { ArrowRight, CheckCircle2, Github, ShieldCheck } from 'lucide-react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Sphere, Wireframe } from '@react-three/drei';
 
-export default function HeroSection() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const router = useRouter();
+function WireframeGlobe() {
+  const meshRef = useRef<any>(null);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/gigs?q=${encodeURIComponent(searchQuery.trim())}`);
+  useFrame((state: any) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
+      meshRef.current.rotation.x = state.clock.getElapsedTime() * 0.05;
     }
-  };
-
-  const popularSearches = ['React Developer', 'Logo Design', 'Video Editor', 'Content Writer', 'App Design'];
+  });
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-hero-gradient pointer-events-none" />
+    <Sphere ref={meshRef} args={[1, 16, 16]} scale={2.2}>
+      <meshBasicMaterial color="#09090b" />
+      <Wireframe stroke={"#3f3f46"} thickness={0.02} fillMix={0} />
+      {/* Subtle core glow */}
+      <mesh>
+        <sphereGeometry args={[0.9, 16, 16]} />
+        <meshBasicMaterial color="#fafafa" transparent opacity={0.02} />
+      </mesh>
+    </Sphere>
+  );
+}
 
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-1/4 right-10 w-48 h-48 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }} />
+export default function HeroSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
-        {/* Announcement pill */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 glass-sm rounded-full px-4 py-2 mb-8 border border-primary/30"
-        >
-          <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-          <span className="text-sm text-text-secondary">
-            <span className="text-primary font-semibold">2,400+</span> verified student freelancers ready to work
-          </span>
-        </motion.div>
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.hero-element', {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power3.out',
+      });
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
 
-        {/* Main heading */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="font-display text-5xl md:text-7xl font-black leading-tight mb-6"
-        >
-          Hire{' '}
-          <span className="gradient-text glow-text">Brilliant</span>
-          <br />
-          Student Talent
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed"
-        >
-          Connect with verified college students offering quality freelance services — web development, design, content, and more. All with <span className="text-text-primary font-medium">secure escrow payments</span>.
-        </motion.p>
-
-        {/* Search bar */}
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          onSubmit={handleSearch}
-          className="flex items-center gap-2 glass rounded-2xl p-2 max-w-2xl mx-auto mb-6 border border-border focus-within:border-primary/50 focus-within:shadow-glow-sm transition-all duration-300"
-        >
-          <Search className="w-5 h-5 text-text-muted ml-3 flex-shrink-0" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for a service... e.g. React Developer"
-            className="flex-1 bg-transparent text-text-primary placeholder-text-muted text-sm outline-none py-2"
-          />
-          <button
-            type="submit"
-            className="btn-primary text-sm !py-2.5 !px-5 flex-shrink-0"
-          >
-            Search
-          </button>
-        </motion.form>
-
-        {/* Popular searches */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-14"
-        >
-          <span className="text-xs text-text-muted">Popular:</span>
-          {popularSearches.map((q) => (
-            <Link
-              key={q}
-              href={`/gigs?q=${encodeURIComponent(q)}`}
-              className="text-xs px-3 py-1.5 glass-sm rounded-full text-text-secondary hover:text-primary hover:border-primary/30 transition-all"
-            >
-              {q}
+  return (
+    <section ref={containerRef} className="relative min-h-[100svh] flex items-center pt-24 pb-12 overflow-hidden bg-hero-glow">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 w-full grid lg:grid-cols-2 gap-12 items-center">
+        
+        {/* Left Content */}
+        <div className="z-10 mt-12 lg:mt-0">
+          <div className="hero-element inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-surface-2/50 text-xs font-semibold text-text-secondary mb-8 shadow-sm">
+            <span className="flex h-2 w-2 rounded-full bg-success"></span>
+            Hustlr Enterprise Platform V2
+          </div>
+          
+          <h1 className="hero-element text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] mb-6">
+            Elite Engineering.<br />
+            <span className="text-text-muted">Verified Students.</span>
+          </h1>
+          
+          <p className="hero-element text-lg md:text-xl text-text-secondary max-w-xl leading-relaxed mb-10">
+            Connect with technical university talent for scalable web applications, systems architecture, and UX design. Secured by escrow and admin-verified.
+          </p>
+          
+          <div className="hero-element flex flex-col sm:flex-row gap-4 mb-12">
+            <Link href="/gigs" className="btn-primary h-12 px-8 text-base shadow-[0_0_20px_rgba(250,250,250,0.15)] hover:shadow-[0_0_30px_rgba(250,250,250,0.25)]">
+              Explore Directory
             </Link>
-          ))}
-        </motion.div>
+            <Link href="/register" className="btn-secondary h-12 px-8 text-base">
+              Join the Network
+            </Link>
+          </div>
 
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-        >
-          <Link href="/gigs" className="btn-primary flex items-center gap-2 text-base">
-            Browse All Gigs <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link href="/register?role=student" className="btn-secondary flex items-center gap-2 text-base">
-            <Zap className="w-4 h-4" /> Join as a Student
-          </Link>
-        </motion.div>
+          <div className="hero-element flex flex-wrap gap-6 text-sm text-text-secondary font-medium">
+            <div className="flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-success" /> Admin Verified</div>
+            <div className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-white" /> Escrow Protection</div>
+            <div className="flex items-center gap-2"><Github className="w-5 h-5 text-text-muted" /> OSS Integrated</div>
+          </div>
+        </div>
 
-        {/* Trust badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-6 text-xs text-text-secondary"
-        >
-          {[
-            { icon: Shield, text: 'ID Verified Students' },
-            { icon: Star, text: '4.9/5 Avg. Rating' },
-            { icon: Zap, text: 'Secure Escrow Payments' },
-          ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-2">
-              <Icon className="w-4 h-4 text-primary" />
-              <span>{text}</span>
+        {/* Right 3D Visual */}
+        <div className="hero-element relative h-[400px] lg:h-[600px] w-full hidden lg:block perspective-1000">
+          <div className="absolute inset-0 z-0">
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+              <WireframeGlobe />
+            </Canvas>
+          </div>
+          {/* Fading transparent overlay to blend object perfectly into background */}
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#09090b] pointer-events-none z-10 w-1/4 left-0"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] to-transparent pointer-events-none z-10 h-1/4 bottom-0"></div>
+          
+          {/* Floating UI Elements */}
+          <div className="absolute top-[20%] right-[10%] glass-sm rounded-xl p-4 w-48 z-20 border-white/10 shadow-xl animate-float">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-bold">AC</div>
+              <div>
+                <div className="text-xs font-semibold text-white">Alex Chen</div>
+                <div className="text-[10px] text-text-muted">MIT '25</div>
+              </div>
             </div>
-          ))}
-        </motion.div>
+            <div className="h-2 w-full bg-surface rounded-full mb-1"><div className="h-full bg-white w-[80%] rounded-full"></div></div>
+            <div className="text-[10px] text-text-secondary text-right">Commit Pushed</div>
+          </div>
+        </div>
+
       </div>
     </section>
   );

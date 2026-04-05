@@ -2,28 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Zap, Menu, X, ChevronDown, LogOut, User, LayoutDashboard,
-  Briefcase, Trophy, Search,
-} from 'lucide-react';
+import { Menu, X, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
-import { cn, getInitials } from '@/lib/utils';
 
 const navLinks = [
-  { href: '/gigs', label: 'Browse Gigs' },
-  { href: '/challenges', label: 'Challenges' },
+  { href: '/gigs', label: 'Talent Directory' },
+  { href: '/challenges', label: 'Bounties' },
   { href: '/how-it-works', label: 'How It Works' },
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const { user, logout } = useAuthStore();
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -31,50 +30,28 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setMobileOpen(false);
-    setProfileOpen(false);
-  }, [pathname]);
-
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
-
-  const dashboardHref =
-    user?.role === 'admin'
-      ? '/dashboard/admin'
-      : user?.role === 'company'
-      ? '/dashboard/company'
-      : '/dashboard/student';
-
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        scrolled ? 'glass border-b border-border/60 py-3' : 'bg-transparent py-5'
-      )}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+    <header className={cn(
+      "fixed top-0 left-0 right-0 z-[100] transition-all duration-300 border-b",
+      scrolled ? "bg-[#09090b]/80 backdrop-blur-md border-border py-4" : "bg-transparent border-transparent py-6"
+    )}>
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
+        
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-glow-sm group-hover:shadow-glow-md transition-shadow">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-display text-xl font-bold gradient-text">Hustlr</span>
+        <Link href="/" className="font-bold text-xl tracking-tight text-white flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-white text-[#09090b] flex items-center justify-center font-black">H</div>
+          ustlr
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-8 bg-surface-2/50 px-6 py-2 rounded-full border border-border backdrop-blur-md">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
-                pathname === link.href
-                  ? 'text-primary bg-primary/10'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-2'
+                'text-sm font-medium transition-colors hover:text-white',
+                pathname === link.href ? 'text-white' : 'text-text-secondary'
               )}
             >
               {link.label}
@@ -82,91 +59,23 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Right Actions */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link href="/gigs" className="btn-ghost flex items-center gap-2 text-sm">
-            <Search className="w-4 h-4" />
-          </Link>
-
+        {/* Actions */}
+        <div className="hidden md:flex items-center gap-6">
           {user ? (
-            <div className="relative">
-              <button
-                onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2 glass-sm rounded-xl px-3 py-2 hover:border-border-bright transition-all"
-              >
-                {user.profile?.avatarUrl ? (
-                  <img
-                    src={user.profile.avatarUrl}
-                    alt={user.name}
-                    className="w-7 h-7 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-7 h-7 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-xs font-bold text-primary">
-                    {getInitials(user.name)}
-                  </div>
-                )}
-                <span className="text-sm font-medium text-text-primary max-w-[100px] truncate">
-                  {user.name.split(' ')[0]}
-                </span>
-                <ChevronDown
-                  className={cn(
-                    'w-4 h-4 text-text-secondary transition-transform',
-                    profileOpen && 'rotate-180'
-                  )}
-                />
-              </button>
-
-              <AnimatePresence>
-                {profileOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 w-52 glass rounded-2xl border border-border overflow-hidden shadow-card"
-                  >
-                    <div className="p-3 border-b border-border">
-                      <p className="text-sm font-semibold text-text-primary truncate">{user.name}</p>
-                      <p className="text-xs text-text-secondary truncate">{user.email}</p>
-                      <span className="badge bg-primary/15 text-primary mt-1 capitalize">{user.role}</span>
-                    </div>
-                    <div className="p-1.5 flex flex-col gap-0.5">
-                      <Link
-                        href={dashboardHref}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-all"
-                      >
-                        <LayoutDashboard className="w-4 h-4" /> Dashboard
-                      </Link>
-                      <Link
-                        href={`/profile/${user._id}`}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-all"
-                      >
-                        <User className="w-4 h-4" /> Profile
-                      </Link>
-                      {user.role === 'student' && (
-                        <Link
-                          href="/gigs/create"
-                          className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-all"
-                        >
-                          <Briefcase className="w-4 h-4" /> My Gigs
-                        </Link>
-                      )}
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/10 transition-all w-full text-left"
-                      >
-                        <LogOut className="w-4 h-4" /> Sign Out
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-text-secondary">{user.name}</span>
+              <Link href="/dashboard" className="text-sm font-medium text-white hover:text-text-secondary transition-colors underline underline-offset-4">
+                Dashboard
+              </Link>
+              <button onClick={logout} className="text-sm text-text-muted hover:text-white">Sign Out</button>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Link href="/login" className="btn-ghost text-sm">Sign In</Link>
-              <Link href="/register" className="btn-primary text-sm !py-2.5">
-                Get Started
+            <div className="flex items-center gap-4">
+              <Link href="/login" className="text-sm font-medium text-text-secondary hover:text-white transition-colors">
+                Sign In
+              </Link>
+              <Link href="/register" className="btn-primary pr-4 flex items-center gap-2">
+                Get Started <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           )}
@@ -174,61 +83,47 @@ export default function Navbar() {
 
         {/* Mobile Hamburger */}
         <button
-          className="md:hidden btn-ghost p-2"
+          className="md:hidden text-text-secondary hover:text-white transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
         >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
+
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Dropdown */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="md:hidden glass border-t border-border mt-3 overflow-hidden"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-full left-0 right-0 bg-[#09090b] border-b border-border p-6 md:hidden shadow-2xl"
           >
-            <div className="px-4 py-4 flex flex-col gap-1">
+            <nav className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={cn(
-                    'px-4 py-3 rounded-xl text-sm font-medium transition-colors',
-                    pathname === link.href
-                      ? 'text-primary bg-primary/10'
-                      : 'text-text-secondary hover:text-text-primary hover:bg-surface-2'
-                  )}
+                  className="text-lg font-medium text-text-secondary hover:text-white w-full py-2 border-b border-border"
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="border-t border-border mt-2 pt-3 flex flex-col gap-2">
+              <div className="mt-4 flex flex-col gap-3">
                 {user ? (
                   <>
-                    <Link href={dashboardHref} className="btn-secondary text-sm text-center">
-                      Dashboard
-                    </Link>
-                    <button onClick={handleLogout} className="btn-ghost text-danger text-sm">
-                      Sign Out
-                    </button>
+                    <Link href="/dashboard" className="btn-secondary w-full">Dashboard</Link>
+                    <button onClick={logout} className="text-left py-2 text-text-muted">Sign Out</button>
                   </>
                 ) : (
                   <>
-                    <Link href="/login" className="btn-secondary text-sm text-center">
-                      Sign In
-                    </Link>
-                    <Link href="/register" className="btn-primary text-sm text-center">
-                      Get Started
-                    </Link>
+                    <Link href="/login" className="btn-secondary w-full">Sign In</Link>
+                    <Link href="/register" className="btn-primary w-full justify-center">Get Started</Link>
                   </>
                 )}
               </div>
-            </div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>

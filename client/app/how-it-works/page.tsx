@@ -30,7 +30,7 @@ const sections = [
       'All students are ID-verified by our admin team',
       'College email and ID card validation',
       'Only approved students can post gigs',
-      'Premiumm badge for top-rated sellers',
+      'Premium badge for top-rated sellers',
     ],
   },
   {

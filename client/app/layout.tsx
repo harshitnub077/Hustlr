@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter, Outfit } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import SmoothScroll from '@/components/layout/SmoothScroll';
+import CustomCursor from '@/components/layout/CustomCursor';
+import Preloader from '@/components/layout/Preloader';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -10,20 +13,14 @@ const inter = Inter({
   display: 'swap',
 });
 
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-outfit',
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
-  title: 'Hustlr — Student Freelance Marketplace',
+  title: 'Hustlr | Premium Freelance Network',
   description:
-    'Connect with talented verified college students for affordable, high-quality freelance work. Web development, design, content, and more.',
-  keywords: ['freelance', 'students', 'marketplace', 'gigs', 'hire', 'hustlr'],
+    'Connect with elite, verified university students for enterprise-grade digital solutions.',
+  keywords: ['freelance', 'students', 'marketplace', 'gigs', 'hire', 'hustlr', 'premium'],
   authors: [{ name: 'Hustlr' }],
   openGraph: {
-    title: 'Hustlr — Student Freelance Marketplace',
+    title: 'Hustlr | Premium Freelance Network',
     description: 'Hire verified college students for quality freelance work.',
     type: 'website',
   },
@@ -31,17 +28,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
-      <body className="min-h-screen bg-background text-text-primary noise-bg">
-        {/* Global ambient glow */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]" />
-        </div>
+    <html lang="en" className={`${inter.variable}`}>
+      <body className="min-h-screen bg-[#09090b] text-[#fafafa] noise-bg overflow-x-hidden selection:bg-[#fafafa] selection:text-[#09090b]">
+        <Preloader />
+        <CustomCursor />
 
-        <Navbar />
-        <main className="page-enter">{children}</main>
-        <Footer />
+        <SmoothScroll>
+          <Navbar />
+          <main className="page-enter relative z-10">{children}</main>
+          <Footer />
+        </SmoothScroll>
       </body>
     </html>
   );

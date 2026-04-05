@@ -4,6 +4,7 @@ import CategoryGrid from '@/components/home/CategoryGrid';
 import HowItWorks from '@/components/home/HowItWorks';
 import StatsBar from '@/components/home/StatsBar';
 import CTABanner from '@/components/home/CTABanner';
+import TrustSection from '@/components/home/TrustSection';
 
 export default function HomePage() {
   return (
@@ -13,6 +14,7 @@ export default function HomePage() {
       <CategoryGrid />
       <FeaturedGigs />
       <HowItWorks />
+      <TrustSection />
       <CTABanner />
     </>
   );

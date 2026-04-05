@@ -1,84 +1,57 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  darkMode: ['class'],
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: { '2xl': '1400px' },
-    },
     extend: {
       colors: {
-        // Brand palette — deep navy + electric violet
-        background: '#0a0b0f',
-        surface: '#111318',
-        'surface-2': '#1a1d26',
-        'surface-3': '#22263a',
-        border: '#2a2d3e',
-        'border-bright': '#3d4165',
-
-        primary: {
-          DEFAULT: '#7c3aed',
-          hover: '#6d28d9',
-          light: '#a78bfa',
-          glow: 'rgba(124,58,237,0.25)',
-        },
-        accent: {
-          DEFAULT: '#06b6d4',
-          hover: '#0891b2',
-        },
+        background: '#09090b', // zinc-950
+        foreground: '#fafafa', // zinc-50
+        surface: '#18181b', // zinc-900
+        'surface-2': '#27272a', // zinc-800
+        primary: '#fafafa', 
+        accent: '#52525b', // zinc-600
+        border: '#27272a', // zinc-800
+        'border-bright': '#3f3f46', // zinc-700
+        'text-primary': '#fafafa',
+        'text-secondary': '#a1a1aa', // zinc-400
+        'text-muted': '#71717a', // zinc-500
         success: '#10b981',
         warning: '#f59e0b',
         danger: '#ef4444',
-
-        text: {
-          primary: '#f1f5f9',
-          secondary: '#94a3b8',
-          muted: '#4b5563',
-        },
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-outfit)', 'system-ui', 'sans-serif'],
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        sans: ['var(--font-inter)', 'sans-serif'],
       },
       backgroundImage: {
-        'hero-gradient': 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,0.35) 0%, transparent 70%)',
-        'card-gradient': 'linear-gradient(135deg, rgba(26,29,38,0.9) 0%, rgba(34,38,58,0.7) 100%)',
-        'glow-gradient': 'radial-gradient(circle at center, rgba(124,58,237,0.15) 0%, transparent 70%)',
-        'border-gradient': 'linear-gradient(135deg, rgba(124,58,237,0.4), rgba(6,182,212,0.2))',
-      },
-      boxShadow: {
-        'glow-sm': '0 0 20px rgba(124,58,237,0.2)',
-        'glow-md': '0 0 40px rgba(124,58,237,0.3)',
-        'glow-lg': '0 0 80px rgba(124,58,237,0.25)',
-        card: '0 4px 24px rgba(0,0,0,0.4)',
-        'card-hover': '0 8px 40px rgba(0,0,0,0.5), 0 0 20px rgba(124,58,237,0.2)',
+        'hero-glow': 'radial-gradient(circle at 50% -20%, rgba(250,250,250,0.1) 0%, rgba(9,9,11,0) 80%)',
+        'card-gradient': 'linear-gradient(145deg, rgba(39,39,42,0.5) 0%, rgba(24,24,27,0) 100%)',
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-out',
-        'slide-up': 'slideUp 0.5s ease-out',
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4,0,0.6,1) infinite',
-        'shimmer': 'shimmer 2s linear infinite',
+        'marquee': 'marquee 30s linear infinite',
+        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
-        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-        float: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-12px)' } },
-        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        fadeInUp: {
+          from: { opacity: '0', transform: 'translateY(20px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      boxShadow: {
+        'glass-button': '0 0 10px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.1)',
+        'premium-card': '0 10px 40px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
       },
     },
   },
   plugins: [],
 };
+export default config;

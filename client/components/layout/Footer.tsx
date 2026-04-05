@@ -1,92 +1,82 @@
 import Link from 'next/link';
-import { Zap, Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { ArrowUpRight, Github, Twitter, Linkedin } from 'lucide-react';
 
 const footerLinks = {
-  Platform: [
-    { label: 'Browse Gigs', href: '/gigs' },
-    { label: 'Challenges', href: '/challenges' },
-    { label: 'How It Works', href: '/how-it-works' },
+  Product: [
+    { label: 'Talent Directory', href: '/gigs' },
+    { label: 'Bounties', href: '/challenges' },
+    { label: 'Methodology', href: '/how-it-works' },
     { label: 'Pricing', href: '/pricing' },
   ],
-  Students: [
-    { label: 'Create a Gig', href: '/gigs/create' },
-    { label: 'Student Dashboard', href: '/dashboard/student' },
-    { label: 'Verification', href: '/verify' },
-    { label: 'Leaderboard', href: '/leaderboard' },
+  Resources: [
+    { label: 'Documentation', href: '#' },
+    { label: 'Help Center', href: '#' },
+    { label: 'Open Source', href: '#' },
+    { label: 'Blog', href: '#' },
   ],
   Company: [
-    { label: 'Post a Challenge', href: '/challenges/create' },
-    { label: 'Company Dashboard', href: '/dashboard/company' },
-    { label: 'Subscribe', href: '/pricing' },
-  ],
-  Legal: [
-    { label: 'Terms of Service', href: '/terms' },
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Cookie Policy', href: '/cookies' },
+    { label: 'About Us', href: '#' },
+    { label: 'Careers', href: '#' },
+    { label: 'Terms', href: '/terms' },
+    { label: 'Privacy', href: '/privacy' },
   ],
 };
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border mt-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
+    <footer className="border-t border-border bg-[#09090b] pt-24 pb-12 relative z-20">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20 text-sm">
+          
           {/* Brand */}
-          <div className="col-span-2 sm:col-span-3 lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4 group w-fit">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-glow-sm">
-                <Zap className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-display text-xl font-bold gradient-text">Hustlr</span>
+          <div className="md:col-span-4">
+            <Link href="/" className="font-bold text-xl tracking-tight text-white flex items-center gap-2 mb-6">
+              <div className="w-6 h-6 rounded-md bg-white text-[#09090b] flex items-center justify-center font-black">H</div>
+              ustlr
             </Link>
-            <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
-              The marketplace connecting ambitious college students with companies looking for fresh talent and affordable quality.
+            <p className="text-text-secondary font-medium max-w-sm leading-relaxed mb-6">
+              The premier platform for top-tier university freelancers and enterprise clients.
             </p>
-            <div className="flex items-center gap-3 mt-6">
-              {[
-                { icon: Github, href: '#', label: 'GitHub' },
-                { icon: Twitter, href: '#', label: 'Twitter' },
-                { icon: Linkedin, href: '#', label: 'LinkedIn' },
-              ].map(({ icon: Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="w-9 h-9 glass-sm rounded-lg flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary/40 transition-all duration-200"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
+            <div className="flex items-center gap-4 text-text-muted">
+              <a href="#" className="hover:text-white transition-colors"><Twitter className="w-5 h-5" /></a>
+              <a href="#" className="hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
+              <a href="#" className="hover:text-white transition-colors"><Linkedin className="w-5 h-5" /></a>
             </div>
           </div>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([section, links]) => (
-            <div key={section}>
-              <h4 className="font-semibold text-text-primary text-sm mb-4">{section}</h4>
-              <ul className="flex flex-col gap-2.5">
-                {links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-text-secondary hover:text-text-primary text-sm transition-colors duration-200"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
+            {Object.entries(footerLinks).map(([section, links]) => (
+              <div key={section}>
+                <h4 className="font-semibold text-white mb-6 tracking-tight">{section}</h4>
+                <ul className="flex flex-col gap-4">
+                  {links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-text-secondary hover:text-white transition-colors font-medium flex items-center gap-1 group w-max"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="border-t border-border mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-text-muted text-sm">
-            © {new Date().getFullYear()} Hustlr. All rights reserved.
-          </p>
-          <p className="text-text-muted text-sm flex items-center gap-1.5">
-            Made with <Heart className="w-3.5 h-3.5 text-danger fill-danger animate-pulse-slow" /> for students everywhere
-          </p>
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-text-muted font-medium">
+          <p>© {new Date().getFullYear()} Hustlr Inc. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+              </span>
+              All systems operational
+            </span>
+          </div>
         </div>
       </div>
     </footer>
